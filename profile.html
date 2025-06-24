@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Profile - Quiz Game</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #74ebd5, #acb6e5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .profile-container {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 380px;
+      position: relative;
+    }
+
+    .avatar {
+      width: 120px;
+      height: 120px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 50%;
+      margin: 0 auto 15px;
+      border: 4px solid #0077ff;
+    }
+
+    h2 {
+      margin: 10px 0 5px;
+    }
+
+    .email {
+      color: gray;
+      margin-bottom: 20px;
+    }
+
+    .profile-details label {
+      display: block;
+      margin-top: 10px;
+      text-align: left;
+    }
+
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      background-color: #0077ff;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    .btn:hover {
+      background-color: #005dd1;
+    }
+
+    .bottom-btns {
+      margin-top: 20px;
+    }
+
+    #photoUpload {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <div class="avatar" id="profileImage" style="background-image: url('https://i.pravatar.cc/120');"></div>
+    <input type="file" id="photoUpload" accept="image/*">
+    
+    <h2 id="displayName">Jenny Wilson</h2>
+    <p class="email" id="displayEmail">jenny.wilson@example.com</p>
+    
+    <div class="profile-details">
+      <label><strong>Username:</strong></label>
+      <input type="text" id="username" value="jenny.wilson" oninput="loadExistingUser()">
+
+      <label><strong>Email:</strong></label>
+      <input type="email" id="email" value="jenny.wilson@example.com">
+      
+      <div class="bottom-btns">
+        <button class="btn" onclick="saveProfile()">Save Changes</button>
+        <button class="btn" onclick="goHome()">Go to Home</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function goHome() {
+      window.location.href = "index.html";
+    }
+
+   
+    function saveProfile() {
+      const username = document.getElementById("username").value.trim();
+      const email = document.getElementById("email").value.trim();
+
+      if (username === "" || email === "") {
+        alert("Please enter both username and email.");
+        return;
+      }
+
+      const imageBase64 = localStorage.getItem(`profileImg_${username}`) || "";
+
+      const user = {
+        username,
+        email,
+        photo: imageBase64
+      };
+
+      localStorage.setItem(`userProfile_${username}`, JSON.stringify(user));
+
+      document.getElementById("displayName").textContent = username;
+      document.getElementById("displayEmail").textContent = email;
+
+      alert("Profile updated successfully!");
+    }
+
+  
+    function loadExistingUser() {
+      const username = document.getElementById("username").value.trim();
+      const saved = localStorage.getItem(`userProfile_${username}`);
+      if (saved) {
+        const user = JSON.parse(saved);
+        document.getElementById("email").value = user.email;
+        document.getElementById("displayName").textContent = user.username;
+        document.getElementById("displayEmail").textContent = user.email;
+
+        if (user.photo) {
+          document.getElementById("profileImage").style.backgroundImage = `url(${user.photo})`;
+        }
+      }
+    }
+
+  
+    window.onload = () => {
+      const username = document.getElementById("username").value;
+      const userData = localStorage.getItem(`userProfile_${username}`);
+      if (userData) {
+        const user = JSON.parse(userData);
+        document.getElementById("displayName").textContent = user.username;
+        document.getElementById("displayEmail").textContent = user.email;
+        document.getElementById("username").value = user.username;
+        document.getElementById("email").value = user.email;
+        if (user.photo) {
+          document.getElementById("profileImage").style.backgroundImage = `url(${user.photo})`;
+        }
+      }
+    };
+
+    
+    document.getElementById("photoUpload").addEventListener("change", function () {
+      const file = this.files[0];
+      const username = document.getElementById("username").value.trim();
+
+      if (file && username !== "") {
+        const reader = new FileReader();
+        reader.onloadend = function () {
+          const base64 = reader.result;
+          document.getElementById("profileImage").style.backgroundImage = `url(${base64})`;
+          localStorage.setItem(`profileImg_${username}`, base64);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        alert("Enter username first before uploading a photo.");
+      }
+    });
+  </script>
+</body>
+</html>

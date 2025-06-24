@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz Game - Login</title>
+  <link rel="stylesheet" href="style1.css" />
+  <script>
+    function handleLogin(event) {
+      event.preventDefault(); 
+      alert("✅ Login Successful!");
+      window.location.href = "home.html"; 
+    }
+  </script>
+</head>
+<body>
+  <div class="login-container">
+    <img src="quiz logo.jpg" alt="Quiz Logo" class="logo" />
+    <h1>Quiz Game<br /><span>RELAX MIND</span></h1>
+
+    <form onsubmit="handleLogin(event)">
+      <input type="text" placeholder="Email" name="email" required />
+      <input type="password" placeholder="Password" name="password" required />
+      <button type="submit">Login</button>
+    </form>
+
+    
+    <div style="text-align: center; margin-top: 20px;">
+      <button onclick="window.location.href='index.html'" style="padding: 10px 20px; font-size: 16px;">
+        🔙 Back to Home
+      </button>
+    </div>
+  </div>
+</body>
+</html>

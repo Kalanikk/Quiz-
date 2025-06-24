@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MT Quiz Game</title>
+  <link rel="stylesheet" href="style3.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .quiz-container {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+    }
+    #quiz button {
+      display: block;
+      margin: 10px auto;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+    }
+    #quiz button.correct {
+      background-color: #28a745;
+      color: white;
+    }
+    #quiz button.wrong {
+      background-color: #dc3545;
+      color: white;
+    }
+    #next-btn, #try-again-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    .hidden {
+      display: none;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 20px;
+    }
+    .tiktok-game {
+      margin-top: 20px;
+      animation: bounce 1s infinite alternate;
+      font-size: 24px;
+      color: #ff4081;
+    }
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-10px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>MT Quiz Game</h1>
+    <div id="quiz"></div>
+    <button id="next-btn">Next</button>
+    <div id="result" class="hidden"></div>
+    <button id="try-again-btn" class="hidden">Try Again</button>
+    <div id="tiktok-game" class="hidden tiktok-game">🎮 Play Mini TikTok Game!</div>
+  </div>
+  <script>
+    const quizData = [
+      { q: "What planet is known as the Red Planet?", a: ["Earth", "Mars", "Jupiter", "Saturn"], correct: 1 },
+      { q: "What is 8 x 7?", a: ["54", "56", "64", "48"], correct: 1 },
+      { q: "Who discovered gravity?", a: ["Newton", "Einstein", "Galileo", "Tesla"], correct: 0 },
+      { q: "What gas do plants absorb?", a: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"], correct: 1 },
+      { q: "What is the capital of Sri Lanka?", a: ["Colombo", "Kandy", "Jaffna", "Galle"], correct: 0 },
+      { q: "Which is the longest river in the world?", a: ["Amazon", "Nile", "Yangtze", "Ganges"], correct: 1 },
+      { q: "What is 144 divided by 12?", a: ["10", "11", "12", "13"], correct: 2 },
+      { q: "Who built the pyramids of Giza?", a: ["Romans", "Greeks", "Egyptians", "Persians"], correct: 2 }
+    ];
+
+    let currentQ = 0;
+    let score = 0;
+
+    const quizContainer = document.getElementById('quiz');
+    const nextBtn = document.getElementById('next-btn');
+    const result = document.getElementById('result');
+    const tryAgainBtn = document.getElementById('try-again-btn');
+    const tiktokGame = document.getElementById('tiktok-game');
+
+    function loadQuestion() {
+      quizContainer.innerHTML = '';
+      const q = quizData[currentQ];
+      const question = document.createElement('h2');
+      question.textContent = q.q;
+      quizContainer.appendChild(question);
+      q.a.forEach((option, index) => {
+        const btn = document.createElement('button');
+        btn.textContent = option;
+        btn.addEventListener('click', () => selectAnswer(index, btn));
+        quizContainer.appendChild(btn);
+      });
+    }
+
+    function selectAnswer(index, btn) {
+      const buttons = quizContainer.querySelectorAll('button');
+      buttons.forEach((button, i) => {
+        button.disabled = true;
+        if (i === quizData[currentQ].correct) button.classList.add('correct');
+        else if (button === btn) button.classList.add('wrong');
+      });
+      if (index === quizData[currentQ].correct) score++;
+    }
+
+    nextBtn.addEventListener('click', () => {
+      currentQ++;
+      if (currentQ < quizData.length) {
+        loadQuestion();
+      } else {
+        quizContainer.innerHTML = '';
+        nextBtn.classList.add('hidden');
+        result.classList.remove('hidden');
+        tryAgainBtn.classList.remove('hidden');
+        tiktokGame.classList.remove('hidden');
+        result.textContent = `You scored ${score}/${quizData.length}. ${score >= 6 ? '🏆 You are a Winner!' : 'Keep Practicing!'}`;
+      }
+    });
+
+    tryAgainBtn.addEventListener('click', () => {
+      currentQ = 0;
+      score = 0;
+      nextBtn.classList.remove('hidden');
+      result.classList.add('hidden');
+      tryAgainBtn.classList.add('hidden');
+      tiktokGame.classList.add('hidden');
+      loadQuestion();
+    });
+
+    loadQuestion();
+  </script>
+</body>
+</html>
+
